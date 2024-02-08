@@ -60,6 +60,13 @@ mouse_thread.start()
 
 def blue_screen():
     import subprocess
+    # 按下Win键
+    pyautogui.keyDown('win')
+    # 按下M键
+    pyautogui.press('m')
+    # 释放Win键
+    pyautogui.keyUp('win')
+    time.sleep(0.1)
     process = subprocess.Popen(".\\blueScreen.exe", shell=True)
     time.sleep(1)
     pyautogui.moveTo(766, 545)
