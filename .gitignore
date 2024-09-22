@@ -1,0 +1,8 @@
+.venv/
+Mouse Lock.exe
+.idea/
+*.pyc
+update.bat
+.git/
+test.py
+ZIP/
