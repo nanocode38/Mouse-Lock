@@ -6,3 +6,4 @@ update.bat
 .git/
 test.py
 ZIP/
+.vscode/

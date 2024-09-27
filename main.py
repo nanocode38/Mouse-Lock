@@ -14,7 +14,7 @@ from pynput.mouse import Button, Controller as MouseController, Listener as Mous
 import pystray
 from PIL import Image
 
-__version__ = '1.1.0'
+__version__ = '1.2.0'
 
 start_time = time.time()
 is_down = False
@@ -151,6 +151,19 @@ def main():
         blue_screen()
         unlock_keyboard()
 
+def restart():
+    global is_exit, first_seconds, second_seconds, mouse_position
+    is_exit = True
+    with open('data\\data.dat', 'w', encoding='utf-8') as fb:
+        fb.write(str(first_seconds) + '\n')
+        fb.write(str(second_seconds) + '\n')
+        fb.write(str(mouse_position[0]) + '\n')
+        fb.write(str(mouse_position[1]))
+    icon.stop()
+    pid = os.getpid()
+    os.system('Restart.exe')
+    os.kill(pid, signal.SIGTERM)
+    sys.exit()
 
 def exit(icon):
     global is_exit, first_seconds, second_seconds, mouse_position
@@ -230,7 +243,9 @@ def show_settings(*args, **kwargs):
 image = Image.open("images\\logo.ico")  # Open ICO image file and create an Image object
 menu = (
     pystray.MenuItem('Settings', show_settings, default=True),
-    pystray.MenuItem(text='Exit', action=exit),)  # Create menu items tuple
+    pystray.MenuItem(text='Exit', action=exit), # Create menu items tuple
+    pystray.MenuItem(text='Restart', action=restart)
+)
 icon = pystray.Icon("name", image, "Mouse Lock", menu)  # Create PyStray Icon object and pass the necessary parameters
 
 # Display icon
