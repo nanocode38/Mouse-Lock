@@ -5,6 +5,7 @@ import pathlib
 import signal
 import time
 import threading
+import json
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -26,6 +27,7 @@ if not os.path.isdir(os.path.join(user_path, 'MouseLock')):
         fb.write('60\n180\n800\n545')
     shutil.copy('.\\images\\logo.ico', user_path / 'MouseLock' / 'logo.ico')
     shutil.copy('.\\blueScreen.exe', user_path / 'MouseLock' / 'blueScreen.exe')
+    shutil.copy('.\\Language', user_path / 'MouseLock' / 'Language')
 user_path = user_path / 'MouseLock'
 start_time = time.time()
 is_down = False
@@ -35,6 +37,9 @@ with open(os.path.join(user_path, 'data.dat'), 'r') as fb:
     first_seconds = int(read[0])
     second_seconds = int(read[1])
     mouse_position = (int(read[2]), int(read[3]))
+with open(pathlib.Path().cwd() / 'Language' / 'Chinese.json', 'r', encoding='utf-8') as f:
+    language = json.load(f)
+
 is_exit = False
 
 def reset():
@@ -212,53 +217,56 @@ def show_settings(*args, **kwargs):
             mouse_position = (863, 575)
 
         if entry1_answer >= entry2_answer:
-            messagebox.showerror("Mouse Lock Settings", "Error: Unable to set First Gear Wait Time to be less than or equal to Second Gear Wait Time. Please set First Gear Wait Time to be greater than Second Gear Wait Time.")
+            messagebox.showerror(language['title'], language['Error'])
         elif finish_exit:
             root.destroy()
 
 
     root = tk.Tk()
     root.geometry('500x500')
-    root.title('Mouse Lock Settings')
+    root.title(language['title'])
     root.iconbitmap(default='.\\logo.ico')
-    tk.Label(root, text='First gear wait time (s): ').place(x=2, y=2)
-    tk.Label(root, text='Second gear wait time (s): ').place(x=2, y=40)
-    tk.Label(root, text='Style: ').place(x=2, y=80)
+    tk.Label(root, text=language['First gear wait time']).place(x=2, y=2)
+    tk.Label(root, text=language['Second gear wait time']).place(x=2, y=40)
+    tk.Label(root, text=language['Style']).place(x=2, y=80)
     entry1 = tk.Entry(root)
     entry1.insert(0, str(first_seconds))
     entry2 = tk.Entry(root)
     entry2.insert(0, str(second_seconds))
     entry1.place(x=200, y=2)
     entry2.place(x=200, y=40)
-    default = 'Blue Screen'
+    default = language['Styles']['Blue Screen']
     if mouse_position == (878, 546):
-        default = 'Recover'
+        default = language['Styles']['Recover']
     elif mouse_position == (795, 515):
-        default = 'FBI'
+        default = language['Styles']['FBI']
         print(mouse_position)
     elif mouse_position == (800, 572):
-        default = 'Collapse'
+        default = language['Styles']['Collapse']
     elif mouse_position == (871, 514):
-        default = 'Update'
+        default = language['Styles']['Update']
     elif mouse_position == (863, 575):
-        default = 'Restart'
-    options = ttk.Combobox(root, values=["Blue Screen", "FBI", "Recover", "Restart", "Update", "Collapse"], state="readonly")
+        default = language['Styles']['Restart']
+    values = []
+    for k, v in language['Styles'].items():
+        values.append(v)
+    options = ttk.Combobox(root, values=values, state="readonly")
     options.set(default)
     options.place(x=70, y=80)
-    tk.Button(root, text='  Apply  ', command=ok).place(x=430, y=460)
-    tk.Button(root, text=' Cancel ', command=root.destroy).place(x=350, y=460)
-    tk.Button(root, text=' Confirm ', command=lambda :ok(True)).place(x=260, y=460)
+    tk.Button(root, text=language['Buttons']['Apply'], command=ok).place(x=430, y=460)
+    tk.Button(root, text=language['Buttons']['Cancel'], command=root.destroy).place(x=350, y=460)
+    tk.Button(root, text=language['Buttons']['Confirm'], command=lambda :ok(True)).place(x=260, y=460)
     root.mainloop()
 
 
 # Create icon object
 image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
 menu = (
-    pystray.MenuItem('Settings', show_settings, default=True),
-    pystray.MenuItem(text='Exit', action=exit), # Create menu items tuple
-    pystray.MenuItem(text='Restart', action=restart)
+    pystray.MenuItem(language['Menu']['Settings'], show_settings, default=True),
+    pystray.MenuItem(language['Menu']['Exit'], action=exit), # Create menu items tuple
+    pystray.MenuItem(language['Menu']['Restart'], action=restart)
 )
-icon = pystray.Icon("name", image, "Mouse Lock", menu)  # Create PyStray Icon object and pass the necessary parameters
+icon = pystray.Icon("name", image, language['name'], menu)  # Create PyStray Icon object and pass the necessary parameters
 
 # Display icon
 _ = threading.Thread(target=icon.run, daemon=True).start()
