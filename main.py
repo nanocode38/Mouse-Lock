@@ -1,5 +1,7 @@
+import shutil
 import sys
 import os
+import pathlib
 import signal
 import time
 import threading
@@ -14,11 +16,21 @@ from pynput.mouse import Button, Controller as MouseController, Listener as Mous
 import pystray
 from PIL import Image
 
+__author__ = 'nanocode38'
 __version__ = '1.2.0'
 
+user_path = pathlib.Path().home() / 'AppData' / 'Local'
+if not os.path.isdir(os.path.join(user_path, 'MouseLock')):
+    os.mkdir(user_path / 'MouseLock')
+    with open(user_path / 'MouseLock' / 'data.dat', 'w') as fb:
+        fb.write('60\n180\n800\n545')
+    shutil.copy('.\\images\\logo.ico', user_path / 'MouseLock' / 'logo.ico')
+    shutil.copy('.\\blueScreen.exe', user_path / 'MouseLock' / 'blueScreen.exe')
+user_path = user_path / 'MouseLock'
 start_time = time.time()
 is_down = False
-with open('data\\data.dat', 'r') as fb:
+os.chdir(user_path)
+with open(os.path.join(user_path, 'data.dat'), 'r') as fb:
     read = fb.read().split('\n')
     first_seconds = int(read[0])
     second_seconds = int(read[1])
@@ -154,7 +166,7 @@ def main():
 def restart():
     global is_exit, first_seconds, second_seconds, mouse_position
     is_exit = True
-    with open('data\\data.dat', 'w', encoding='utf-8') as fb:
+    with open(os.path.join(user_path, 'data.dat'), 'w') as fb:
         fb.write(str(first_seconds) + '\n')
         fb.write(str(second_seconds) + '\n')
         fb.write(str(mouse_position[0]) + '\n')
@@ -168,7 +180,7 @@ def restart():
 def exit(icon):
     global is_exit, first_seconds, second_seconds, mouse_position
     is_exit = True
-    with open('data\\data.dat', 'w', encoding='utf-8') as fb:
+    with open(os.path.join(user_path, 'data.dat'), 'w') as fb:
         fb.write(str(first_seconds) + '\n')
         fb.write(str(second_seconds) + '\n')
         fb.write(str(mouse_position[0]) + '\n')
@@ -208,7 +220,7 @@ def show_settings(*args, **kwargs):
     root = tk.Tk()
     root.geometry('500x500')
     root.title('Mouse Lock Settings')
-    root.iconbitmap(default='images\\logo.ico')
+    root.iconbitmap(default='.\\logo.ico')
     tk.Label(root, text='First gear wait time (s): ').place(x=2, y=2)
     tk.Label(root, text='Second gear wait time (s): ').place(x=2, y=40)
     tk.Label(root, text='Style: ').place(x=2, y=80)
@@ -240,7 +252,7 @@ def show_settings(*args, **kwargs):
 
 
 # Create icon object
-image = Image.open("images\\logo.ico")  # Open ICO image file and create an Image object
+image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
 menu = (
     pystray.MenuItem('Settings', show_settings, default=True),
     pystray.MenuItem(text='Exit', action=exit), # Create menu items tuple
