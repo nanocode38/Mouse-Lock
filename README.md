@@ -9,4 +9,7 @@ Click the middle mouse button to unlock the status, right-click on the blue scre
 ))
 #### 2. Instructions for use
 From [https://github.com/nanocode38/Mouse-Lock/releases/tag/Version1.1.0](https://github.com/nanocode38/Mouse-Lock/releases/tag/Version1.1.0 )Download `Mouse_Lock-Windows.x64-x86.zip`, unzip and double-click to run `Mouse Lock.exe`!
+
+*Tip: For the first time, please ensure that the run in the source directory, both ensure that the run directory contains Language and Program directories and their contents in order to copy files!*
+
 ##### 3. The source code is open source and free, without copyright, and cannot be used for commercial purposes!

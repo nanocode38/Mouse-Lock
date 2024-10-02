@@ -1,9 +1,12 @@
 {
+    "name": "Mouse Lock",
     "title": "Mouse Lock Settings",
     "First gear wait time": "First gear wait time (s): ",
     "Second gear wait time": "Second gear wait time (s): ",
     "Style": "Style: ",
+    "Language": "Language: ",
     "Error": "Error: Unable to set First Gear Wait Time to be less than or equal to Second Gear Wait Time. Please set First Gear Wait Time to be greater than Second Gear Wait Time.",
+    "Info": "Are you restarting immediately by changing the language options ? Changes cannot be applied otherwise.",
     "Styles":{
         "Blue Screen": "Blue Screen",
         "FBI": "FBI",

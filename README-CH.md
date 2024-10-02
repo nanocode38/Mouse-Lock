@@ -11,4 +11,6 @@
 #### 2.使用方法
 从[https://github.com/nanocode38/Mouse-Lock/releases/tag/Version1.1.0](https://github.com/nanocode38/Mouse-Lock/releases/tag/Version1.1.0)下载`Mouse_Lock-Windows.x64-x86.zip`, 解压后双击运行`Mouse Lock.exe`即可！
 
+*提示: 首次使用请保证在源目录下运行, 既保证运行目录下含有Language和Program目录及其内容以便于复制文件!*
+
 ##### 3.源代码开源免费， 无版权， 不可商用！

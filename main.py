@@ -6,6 +6,7 @@ import signal
 import time
 import threading
 import json
+import subprocess
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
@@ -18,16 +19,19 @@ import pystray
 from PIL import Image
 
 __author__ = 'nanocode38'
-__version__ = '1.2.0'
+__version__ = '2.0.0'
 
 user_path = pathlib.Path().home() / 'AppData' / 'Local'
 if not os.path.isdir(os.path.join(user_path, 'MouseLock')):
     os.mkdir(user_path / 'MouseLock')
+    # os.mkdir(user_path / 'MouseLock' / 'Language')
     with open(user_path / 'MouseLock' / 'data.dat', 'w') as fb:
-        fb.write('60\n180\n800\n545')
-    shutil.copy('.\\images\\logo.ico', user_path / 'MouseLock' / 'logo.ico')
-    shutil.copy('.\\blueScreen.exe', user_path / 'MouseLock' / 'blueScreen.exe')
-    shutil.copy('.\\Language', user_path / 'MouseLock' / 'Language')
+        fb.write('60\n180\n800\n545\nEnglish\n0')
+    shutil.copy('.\\program\\logo.ico', user_path / 'MouseLock' / 'logo.ico')
+    shutil.copy('.\\program\\blueScreen.exe', user_path / 'MouseLock' / 'blueScreen.exe')
+    shutil.copy('.\\program\\Mouse Lock.exe', user_path / 'MouseLock')
+    shutil.copy('.\\program\\Mouse Lock1.exe', user_path / 'MouseLock')
+    shutil.copytree('.\\Language', user_path / 'MouseLock' / 'Language')
 user_path = user_path / 'MouseLock'
 start_time = time.time()
 is_down = False
@@ -37,7 +41,9 @@ with open(os.path.join(user_path, 'data.dat'), 'r') as fb:
     first_seconds = int(read[0])
     second_seconds = int(read[1])
     mouse_position = (int(read[2]), int(read[3]))
-with open(pathlib.Path().cwd() / 'Language' / 'Chinese.json', 'r', encoding='utf-8') as f:
+    language_name = read[4]
+    pos = int(read[5])
+with open(pathlib.Path().cwd() / 'Language' / f'{language_name}.json', 'r', encoding='utf-8') as f:
     language = json.load(f)
 
 is_exit = False
@@ -91,7 +97,6 @@ mouse_thread.start()
 
 def blue_screen():
     global mouse_position
-    import subprocess
     # Press Win key
     pyautogui.keyDown('win')
     # Press M key
@@ -175,10 +180,15 @@ def restart():
         fb.write(str(first_seconds) + '\n')
         fb.write(str(second_seconds) + '\n')
         fb.write(str(mouse_position[0]) + '\n')
-        fb.write(str(mouse_position[1]))
+        fb.write(str(mouse_position[1]) + '\n')
+        fb.write(language_name + '\n')
+        fb.write('0' if pos else '1')
     icon.stop()
     pid = os.getpid()
-    os.system('Restart.exe')
+    if pos:
+        subprocess.Popen('.\\Mouse Lock.exe')
+    else:
+        subprocess.Popen('.\\Mouse Lock1.exe')
     os.kill(pid, signal.SIGTERM)
     sys.exit()
 
@@ -189,7 +199,9 @@ def exit(icon):
         fb.write(str(first_seconds) + '\n')
         fb.write(str(second_seconds) + '\n')
         fb.write(str(mouse_position[0]) + '\n')
-        fb.write(str(mouse_position[1]))
+        fb.write(str(mouse_position[1]) + '\n')
+        fb.write(language_name + '\n')
+        fb.write('0' if pos else '1')
     icon.stop()
     pid = os.getpid()
     os.kill(pid, signal.SIGTERM)
@@ -198,8 +210,8 @@ def exit(icon):
 def show_settings(*args, **kwargs):
     global first_seconds, second_seconds, mouse_position
     def ok(finish_exit=False):
-        global first_seconds, second_seconds, mouse_position
-        nonlocal entry1, entry2, root, options
+        global first_seconds, second_seconds, mouse_position, language_name
+        nonlocal entry1, entry2, root, options, language_combobox
         entry1_answer, entry2_answer = int(entry1.get() if entry1.get() else first_seconds), int(entry2.get() if entry2.get() else second_seconds)
         first_seconds = entry1_answer if entry1_answer < entry2_answer else first_seconds
         second_seconds = entry2_answer if entry1_answer < entry2_answer else second_seconds
@@ -218,6 +230,10 @@ def show_settings(*args, **kwargs):
 
         if entry1_answer >= entry2_answer:
             messagebox.showerror(language['title'], language['Error'])
+        elif language_name != language_combobox.get():
+            language_name = language_combobox.get()
+            if messagebox.askyesno(language['title'], language['Info']):
+                restart()
         elif finish_exit:
             root.destroy()
 
@@ -226,12 +242,13 @@ def show_settings(*args, **kwargs):
     root.geometry('500x500')
     root.title(language['title'])
     root.iconbitmap(default='.\\logo.ico')
-    tk.Label(root, text=language['First gear wait time']).place(x=2, y=2)
-    tk.Label(root, text=language['Second gear wait time']).place(x=2, y=40)
-    tk.Label(root, text=language['Style']).place(x=2, y=80)
-    entry1 = tk.Entry(root)
+    ttk.Label(root, text=language['First gear wait time']).place(x=2, y=2)
+    ttk.Label(root, text=language['Second gear wait time']).place(x=2, y=40)
+    ttk.Label(root, text=language['Style']).place(x=2, y=80)
+    ttk.Label(root, text=language['Language']).place(x=2, y=120)
+    entry1 = ttk.Entry(root)
     entry1.insert(0, str(first_seconds))
-    entry2 = tk.Entry(root)
+    entry2 = ttk.Entry(root)
     entry2.insert(0, str(second_seconds))
     entry1.place(x=200, y=2)
     entry2.place(x=200, y=40)
@@ -240,7 +257,6 @@ def show_settings(*args, **kwargs):
         default = language['Styles']['Recover']
     elif mouse_position == (795, 515):
         default = language['Styles']['FBI']
-        print(mouse_position)
     elif mouse_position == (800, 572):
         default = language['Styles']['Collapse']
     elif mouse_position == (871, 514):
@@ -253,9 +269,16 @@ def show_settings(*args, **kwargs):
     options = ttk.Combobox(root, values=values, state="readonly")
     options.set(default)
     options.place(x=70, y=80)
-    tk.Button(root, text=language['Buttons']['Apply'], command=ok).place(x=430, y=460)
-    tk.Button(root, text=language['Buttons']['Cancel'], command=root.destroy).place(x=350, y=460)
-    tk.Button(root, text=language['Buttons']['Confirm'], command=lambda :ok(True)).place(x=260, y=460)
+    values = []
+    for name in os.listdir(os.path.join('.', 'Language')):
+        if isinstance(name, str) and name.endswith('.json'):
+            values.append(name[:-5])
+    language_combobox = ttk.Combobox(root, values=values, state="readonly")
+    language_combobox.set(language_name)
+    language_combobox.place(x=80, y=120)
+    ttk.Button(root, text=language['Buttons']['Apply'], command=ok).place(x=380, y=460)
+    ttk.Button(root, text=language['Buttons']['Cancel'], command=root.destroy).place(x=260, y=460)
+    ttk.Button(root, text=language['Buttons']['Confirm'], command=lambda :ok(True)).place(x=140, y=460)
     root.mainloop()
 
 
