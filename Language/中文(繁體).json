@@ -1,0 +1,28 @@
+{
+    "name": "Mouse Lock",
+    "title": "Mouse Lock 設置",
+    "First gear wait time": "第一階段等待時間 (s): ",
+    "Second gear wait time": "第二階段等待時間 (s): ",
+    "Style": "樣式: ",
+    "Language": "語言: ",
+    "Error": "錯誤:無法將第一階段等待時間設置為小於或等於第二階段等待時間。請將“第一階段等待時間”設置為大於“第二階段等待時間”",
+    "Info": "提示:您已更改語言選項, 是否立即重新啟動? 否則無法應用更改",
+    "Styles":{
+        "Blue Screen": "藍屏",
+        "FBI": "FBI",
+        "Recover": "恢復",
+        "Collapse": "卡崩",
+        "Update": "更新",
+        "Restart": "重啟"
+    },
+    "Buttons": {
+        "Apply": "   應用   ",
+        "Cancel": "   取消   ",
+        "Confirm": "   確定   "
+    },
+    "Menu": {
+        "Settings": "設置",
+        "Exit": "退出",
+        "Restart": "重啟"
+    }
+}

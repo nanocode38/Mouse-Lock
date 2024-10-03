@@ -1,0 +1,28 @@
+{
+    "name": "Maussperre",
+    "title": "Maussperre-Einstellungen",
+    "First gear wait time": "Wartezeit in der ersten Gangstufe (s): ",
+    "Second gear wait time": "Wartezeit in der zweiten Gangstufe (s): ",
+    "Style": "Stil: ",
+    "Language": "Sprache: ",
+    "Error": "Fehler: Die Wartezeit in der ersten Gangstufe kann nicht kleiner oder gleich der Wartezeit in der zweiten Gangstufe sein. Bitte setzen Sie die Wartezeit in der ersten Gangstufe größer als die Wartezeit in der zweiten Gangstufe.",
+    "Info": "Hinweis: Haben Sie die Sprachoption geändert? Möchten Sie jetzt neu starten? Andernfalls werden die Änderungen nicht übernommen.",
+    "Styles":{
+        "Blue Screen": "Blauer Bildschirm",
+        "FBI": "FBI",
+        "Recover": "Wiederherstellen",
+        "Collapse": "Abstürzen",
+        "Update": "Aktualisieren",
+        "Restart": "Neu starten"
+    },
+    "Buttons": {
+        "Apply": "   Anwenden   ",
+        "Cancel": "   Abbrechen   ",
+        "Confirm": "   Bestätigen   "
+    },
+    "Menu": {
+        "Settings": "Einstellungen",
+        "Exit": "Beenden",
+        "Restart": "Neu starten"
+    }
+}
