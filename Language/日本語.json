@@ -23,6 +23,8 @@
     "Menu": {
         "Settings": "設定",
         "Exit": "終了",
-        "Restart": "再起動"
+        "Restart": "再起動",
+        "Pause": "一時停止する",
+        "Start": "続く"
     }
 }

@@ -23,6 +23,8 @@
     "Menu": {
         "Settings": "设置",
         "Exit": "退出",
-        "Restart": "重启"
+        "Restart": "重启",
+        "Pause": "暂停",
+        "Start": "继续"
     }
 }

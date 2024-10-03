@@ -23,6 +23,8 @@
     "Menu": {
         "Settings": "Einstellungen",
         "Exit": "Beenden",
-        "Restart": "Neu starten"
+        "Restart": "Neu starten",
+        "Pause": "Pause",
+        "Start": "weiter"
     }
 }

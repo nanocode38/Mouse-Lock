@@ -10,6 +10,7 @@ import subprocess
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from traceback import print_exc
 
 import pyautogui
 import keyboard as kb
@@ -19,7 +20,7 @@ import pystray
 from PIL import Image
 
 __author__ = 'nanocode38'
-__version__ = '2.0.0'
+__version__ = '2.1.0'
 
 user_path = pathlib.Path().home() / 'AppData' / 'Local'
 if not os.path.isdir(os.path.join(user_path, 'MouseLock')):
@@ -47,6 +48,7 @@ with open(pathlib.Path().cwd() / 'Language' / f'{language_name}.json', 'r', enco
     language = json.load(f)
 
 is_exit = False
+is_pause = False
 
 def reset():
     global start_time
@@ -96,6 +98,8 @@ keyboard_thread.start()
 mouse_thread.start()
 
 def blue_screen():
+    if is_pause:
+        return
     global mouse_position
     # Press Win key
     pyautogui.keyDown('win')
@@ -143,7 +147,7 @@ def main():
     global start_time, is_down, first_seconds, second_seconds
     is_unlock = False
     while True:
-        if time.time() - start_time >= first_seconds:
+        if time.time() - start_time >= first_seconds and not is_pause:
             break
         time.sleep(0.1)
     # Set automatic failure protection to False, so the program won't stop even if the mouse moves to the top left corner of the screen
@@ -281,15 +285,29 @@ def show_settings(*args, **kwargs):
     ttk.Button(root, text=language['Buttons']['Confirm'], command=lambda :ok(True)).place(x=140, y=460)
     root.mainloop()
 
+def pause_or_start():
+    global is_pause, start_menu, pause_menu, icon
+    is_pause = not is_pause
+    if is_pause:
+        icon.menu = pause_menu
+    else:
+        icon.menu = start_menu
 
 # Create icon object
 image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
-menu = (
+start_menu = (
     pystray.MenuItem(language['Menu']['Settings'], show_settings, default=True),
     pystray.MenuItem(language['Menu']['Exit'], action=exit), # Create menu items tuple
-    pystray.MenuItem(language['Menu']['Restart'], action=restart)
+    pystray.MenuItem(language['Menu']['Restart'], action=restart),
+    pystray.MenuItem(language['Menu']['Pause'], action=pause_or_start)
 )
-icon = pystray.Icon("name", image, language['name'], menu)  # Create PyStray Icon object and pass the necessary parameters
+pause_menu = (
+    pystray.MenuItem(language['Menu']['Settings'], show_settings, default=True),
+    pystray.MenuItem(language['Menu']['Exit'], action=exit), # Create menu items tuple
+    pystray.MenuItem(language['Menu']['Restart'], action=restart),
+    pystray.MenuItem(language['Menu']['Start'], action=pause_or_start)
+)
+icon = pystray.Icon("name", image, language['name'], start_menu)  # Create PyStray Icon object and pass the necessary parameters
 
 # Display icon
 _ = threading.Thread(target=icon.run, daemon=True).start()
