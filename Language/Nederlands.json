@@ -1,0 +1,30 @@
+{
+    "name": "Muisvergrendeling",
+    "title": "Instellingen voor muisvergrendeling",
+    "First gear wait time": "Eerste versnellingswachttijd (s): ",
+    "Second gear wait time": "Tweede versnellingswachttijd (s): ",
+    "Style": "Stijl: ",
+    "Language": "Taal: ",
+    "Error": "Fout: Kan de eerste versnellingswachttijd niet instellen op kleiner dan of gelijk aan de tweede versnellingswachttijd. Stel de 'eerste versnellingswachttijd' in op groter dan de 'tweede versnellingswachttijd'.",
+    "Info": "Informatie: Heb je de taaloptie gewijzigd? Wil je onmiddellijk opnieuw opstarten? Anders kunnen de wijzigingen niet worden toegepast.",
+    "Styles":{
+        "Blue Screen": "Blauw scherm",
+        "FBI": "FBI",
+        "Recover": "Herstellen",
+        "Collapse": "Vouw in",
+        "Update": "Bijwerken",
+        "Restart": "Opnieuw opstarten"
+    },
+    "Buttons": {
+        "Apply": "   Toepassen   ",
+        "Cancel": "   Annuleren   ",
+        "Confirm": "   Bevestigen   "
+    },
+    "Menu": {
+        "Settings": "Instellingen",
+        "Exit": "Afsluiten",
+        "Restart": "Opnieuw opstarten",
+        "Pause": "Pauzeren",
+        "Start": "Starten"
+    }
+}
