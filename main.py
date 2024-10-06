@@ -19,7 +19,7 @@ import pystray
 from PIL import Image
 
 __author__ = 'nanocode38'
-__version__ = '2.1.2'
+__version__ = '2.2.0'
 
 
 def unlock_keyboard():
@@ -74,14 +74,14 @@ class Main:
         # Create icon object
         image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
         self.start_menu = (
-            pystray.MenuItem(self.language['Menu']['Settings'], self.show_settings),
-            pystray.MenuItem(self.language['Menu']['Exit'], action=self.exit_program),  # Create menu items tuple
+            pystray.MenuItem(self.language['Menu']['Settings'], self.show_settings, default=True),
+            pystray.MenuItem(self.language['Menu']['Exit'], action=self.exit_program),
             pystray.MenuItem(self.language['Menu']['Restart'], action=self.restart),
             pystray.MenuItem(self.language['Menu']['Pause'], action=self.pause_or_start)
         )
         self.pause_menu = (
-            pystray.MenuItem(self.language['Menu']['Settings'], self.show_settings),
-            pystray.MenuItem(self.language['Menu']['Exit'], action=self.exit_program),  # Create menu items tuple
+            pystray.MenuItem(self.language['Menu']['Settings'], self.show_settings, default=True),
+            pystray.MenuItem(self.language['Menu']['Exit'], action=self.exit_program),
             pystray.MenuItem(self.language['Menu']['Restart'], action=self.restart),
             pystray.MenuItem(self.language['Menu']['Start'], action=self.pause_or_start)
         )
@@ -247,21 +247,39 @@ class Main:
             elif finish_exit:
                 root.destroy()
 
-
+        def adjust(entry, position):
+            _ = entry.get()
+            try:
+                _ = int(_)
+            except ValueError:
+                _ = 1
+            if position:
+                _ += 1
+            elif _ >= 1:
+                _ -= 1
+            else:
+                _ = 0
+            entry.delete(0, tk.END)
+            entry.insert(0, str(_))
         root = tk.Tk()
         root.geometry('500x500')
+        root.resizable(False, False)
         root.title(self.language['title'])
         root.iconbitmap(default='.\\logo.ico')
         ttk.Label(root, text=self.language['First gear wait time']).place(x=2, y=2)
         ttk.Label(root, text=self.language['Second gear wait time']).place(x=2, y=40)
         ttk.Label(root, text=self.language['Style']).place(x=2, y=80)
         ttk.Label(root, text=self.language['Language']).place(x=2, y=120)
-        entry1 = ttk.Spinbox(root, from_=0, to=114514, increment=1)
+        entry1 = ttk.Entry(root)
         entry1.insert(0, str(self.first_seconds))
-        entry2 = ttk.Spinbox(root, from_=0, to=114514, increment=1)
+        entry2 = ttk.Entry(root)
         entry2.insert(0, str(self.second_seconds))
         entry1.place(x=200, y=2)
         entry2.place(x=200, y=40)
+        tk.Button(root, text='▲', font=('Times', 4), command=lambda :adjust(entry1, True)).place(x=400, y=2)
+        tk.Button(root, text='▼', font=('Times', 4), command=lambda :adjust(entry1, False)).place(x=400, y=15)
+        tk.Button(root, text='▲', font=('Times', 4), command=lambda :adjust(entry2, True)).place(x=400, y=40)
+        tk.Button(root, text='▼', font=('Times', 4),  command=lambda :adjust(entry2, False)).place(x=400, y=55)
         default = self.language['Styles']['Blue Screen']
         if self.mouse_position == (878, 546):
             default = self.language['Styles']['Recover']
@@ -293,10 +311,13 @@ class Main:
 
     def pause_or_start(self):
         self.is_pause = not self.is_pause
+        self.icon.stop()
+        image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
         if self.is_pause:
-            self.icon.menu = self.pause_menu
+            self.icon = pystray.Icon("name", image, self.language['name'], self.pause_menu)
         else:
-            self.icon.menu = self.start_menu
+            self.icon = pystray.Icon("name", image, self.language['name'], self.start_menu)
+        threading.Thread(target=self.icon.run, daemon=True).start()
 
     def start_mainloop(self):
         while not self.is_exit:
