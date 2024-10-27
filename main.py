@@ -19,7 +19,7 @@ import pystray
 from PIL import Image
 
 __author__ = 'nanocode38'
-__version__ = '2.2.0'
+__version__ = '2.2.1'
 
 
 def unlock_keyboard():
