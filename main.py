@@ -19,7 +19,7 @@ import pystray
 from PIL import Image
 
 __author__ = 'nanocode38'
-__version__ = '2.2.1'
+__version__ = '2.2.2'
 
 
 def unlock_keyboard():
@@ -49,19 +49,7 @@ def lock_keyboard():
 class Main:
     def __init__(self):
         # Initialize vars and paths
-        self.user_path = pathlib.Path().home() / 'AppData' / 'Local'
-        if not os.path.isdir(os.path.join(self.user_path, 'MouseLock')):
-            os.mkdir(self.user_path / 'MouseLock')
-            with open(self.user_path / 'MouseLock' / 'data.dat', 'w') as fb:
-                fb.write('60\n180\n800\n545\nEnglish\n0')
-            shutil.copy('.\\program\\logo.ico', self.user_path / 'MouseLock' / 'logo.ico')
-            shutil.copy('.\\program\\blueScreen.exe', self.user_path / 'MouseLock' / 'blueScreen.exe')
-            shutil.copy('.\\program\\Mouse Lock.exe', self.user_path / 'MouseLock')
-            shutil.copy('.\\program\\Mouse Lock1.exe', self.user_path / 'MouseLock')
-            shutil.copytree('.\\Language', self.user_path / 'MouseLock' / 'Language')
-        self.user_path = self.user_path / 'MouseLock'
-        os.chdir(self.user_path)
-        with open(os.path.join(self.user_path, 'data.dat'), 'r') as fb:
+        with open('.\\program\\data.dat', 'r') as fb:
             read = fb.read().split('\n')
             self.first_seconds = int(read[0])
             self.second_seconds = int(read[1])
@@ -72,7 +60,7 @@ class Main:
             self.language = json.load(f)
 
         # Create icon object
-        image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
+        image = Image.open(".\\program\\logo.ico")  # Open ICO image file and create an Image object
         self.start_menu = (
             pystray.MenuItem(self.language['Menu']['Settings'], self.show_settings, default=True),
             pystray.MenuItem(self.language['Menu']['Exit'], action=self.exit_program),
@@ -179,7 +167,7 @@ class Main:
         # Release Win key
         pyautogui.keyUp('win')
         time.sleep(0.1)
-        process = subprocess.Popen(".\\blueScreen.exe", shell=True)
+        process = subprocess.Popen(".\\program\\blueScreen.exe", shell=True)
         time.sleep(1)
         pyautogui.moveTo(*self.mouse_position)
         pyautogui.click()
@@ -189,7 +177,7 @@ class Main:
 
     def restart(self):
         self.is_exit = True
-        with open(os.path.join(self.user_path, 'data.dat'), 'w') as fb:
+        with open('.\\program\\data.dat', 'w') as fb:
             fb.write(str(self.first_seconds) + '\n')
             fb.write(str(self.second_seconds) + '\n')
             fb.write(str(self.mouse_position[0]) + '\n')
@@ -199,15 +187,15 @@ class Main:
         self.icon.stop()
         pid = os.getpid()
         if self.pos:
-            subprocess.Popen('.\\Mouse Lock.exe')
+            subprocess.Popen('.\\program\\Mouse Lock.exe')
         else:
-            subprocess.Popen('.\\Mouse Lock1.exe')
+            subprocess.Popen('.\\program\\Mouse Lock1.exe')
         os.kill(pid, signal.SIGTERM)
         sys.exit()
 
     def exit_program(self):
         self.is_exit = True
-        with open(os.path.join(self.user_path, 'data.dat'), 'w') as fb:
+        with open('.\\program\\data.dat', 'w') as fb:
             fb.write(str(self.first_seconds) + '\n')
             fb.write(str(self.second_seconds) + '\n')
             fb.write(str(self.mouse_position[0]) + '\n')
@@ -261,11 +249,17 @@ class Main:
                 _ = 0
             entry.delete(0, tk.END)
             entry.insert(0, str(_))
+
+        def exit(*args, **kwargs):
+            nonlocal root
+            root.destroy()
+            root.quit()
         root = tk.Tk()
+        # root.protocol("WM_DELETE_WINDOW", exit)
         root.geometry('500x500')
         root.resizable(False, False)
         root.title(self.language['title'])
-        root.iconbitmap(default='.\\logo.ico')
+        root.iconbitmap(default='.\\program\\logo.ico')
         ttk.Label(root, text=self.language['First gear wait time']).place(x=2, y=2)
         ttk.Label(root, text=self.language['Second gear wait time']).place(x=2, y=40)
         ttk.Label(root, text=self.language['Style']).place(x=2, y=80)
@@ -305,14 +299,14 @@ class Main:
         language_combobox.set(self.language_name)
         language_combobox.place(x=80, y=120)
         ttk.Button(root, text=self.language['Buttons']['Apply'], command=ok).place(x=380, y=460)
-        ttk.Button(root, text=self.language['Buttons']['Cancel'], command=root.destroy).place(x=260, y=460)
+        ttk.Button(root, text=self.language['Buttons']['Cancel'], command=exit).place(x=260, y=460)
         ttk.Button(root, text=self.language['Buttons']['Confirm'], command=lambda :ok(True)).place(x=140, y=460)
         root.mainloop()
 
     def pause_or_start(self):
         self.is_pause = not self.is_pause
         self.icon.stop()
-        image = Image.open(".\\logo.ico")  # Open ICO image file and create an Image object
+        image = Image.open(".\\program\\logo.ico")  # Open ICO image file and create an Image object
         if self.is_pause:
             self.icon = pystray.Icon("name", image, self.language['name'], self.pause_menu)
         else:
